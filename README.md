@@ -23,3 +23,6 @@ This should not throw any exceptions.
 successfully.
 - Currently only single channel/queue called `tasks` is implemented, should
 support multiples.
+- Since worker is executing multiple tasks in parallel, depending on the
+execution time, the order of execution of tasks might not remain same as they
+were enqueued.
