@@ -28,8 +28,8 @@ def start_worker(channel='tasks', max=None, resources=[]):
     """
     channel: Queue from which tasks needs to be executed
     max: Maximum number of tasks to be exucuted,
-         useful when worker is started from another process.
-         None (default) means all and keep listening for more
+        useful when worker is started from another process.
+        None (default) means all and keep listening for more
     resources: List of available CPU and memory for the worker
     """
 
@@ -57,6 +57,7 @@ def start_worker(channel='tasks', max=None, resources=[]):
                 req_mem = int(task['args']['resources']['mem'])
                 # wait if enough resources are not available
                 while resources[0] < req_cpu or resources[1] < req_mem:
+                    print('Waiting for resources ...')
                     time.sleep(1)
                 # grab them as soon as they are available
                 resources[0] -= req_cpu
