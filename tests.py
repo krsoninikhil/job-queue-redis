@@ -1,9 +1,10 @@
 from task_queue import TaskQueue
-from tasks import docker_task
+from tasks import test_task, docker_task
 from worker import start_worker
 
 # define task arguments for testing
-args = {'image': 'test', 'cmds': ['cmd'], 'resources': {}, 'env': {}}
+args = {'image': 'test', 'cmds': ['ls', 'pwd'], 'env': {'FOO': 'bar'},
+        'resources': {'cpu': '2', 'mem': '2'}}
 
 # make a test queue object
 q = TaskQueue(config_file='config.json')
@@ -15,15 +16,19 @@ n = q.q_size()
 #assert docker_task(args) == 0
 
 # test if task gets enqueued to the queue
-assert q.push('docker_task', args) == 0
-assert q.push('docker_task', args) == 0
-assert q.push('docker_task', args) == 0
+assert q.push('test_task', args) == 0
+assert q.push('test_task', args) == 0
+assert q.push('test_task', args) == 0
+assert q.push('test_task', args) == 0
 
 # test if task has enqueued
-assert q.q_size() == n + 3
+assert q.q_size() == n + 4
 
-# test if worker executes the one task and exit with status 0
-assert start_worker(max=2) == 0
+# test if worker executes 3 tasks with given resources and exit with status 0
+# since the required memory and cpu of the tasks is 3 and available is 5 and 5
+# only 2 tasks should be executed parellely and 3rd will be executed only when
+# one of earlier two is completed. This can be verified through log timestamp
+assert start_worker(max=3, resources=[5, 5]) == 0
 
 # test if task has removed from queue
 assert q.q_size() == n + 1
