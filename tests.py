@@ -3,7 +3,7 @@ from tasks import test_task, docker_task
 from worker import start_worker
 
 # define task arguments for testing
-args = {'image': 'test', 'cmds': ['ls', 'pwd'], 'env': {'FOO': 'bar'},
+args = {'image': 'alpine', 'cmd': ['ls', '-a'], 'env': {'FOO': 'bar'},
         'resources': {'cpu': '2', 'mem': '2'}}
 
 # make a test queue object
